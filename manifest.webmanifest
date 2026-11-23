@@ -1,6 +1,6 @@
 {
- "name": "Học YHCT – Thư viện Y học cổ truyền",
- "short_name": "Học YHCT",
+ "name": "Thư viện đọc sách YHCT",
+ "short_name": "Thư viện YHCT",
  "description": "Đọc bài giảng, tra cứu huyệt, vị thuốc, bài thuốc, flashcard và trắc nghiệm Y học cổ truyền.",
  "lang": "vi",
  "start_url": "./",

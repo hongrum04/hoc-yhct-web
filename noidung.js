@@ -1,8 +1,6 @@
 // Nội dung app Học YHCT. Sửa trong app (chế độ Quản trị) rồi bấm "Tải file noidung.js".
 window.CATALOG = [
 {"f":"noi khoa y an .pdf","t":"noi khoa y an","c":"Bệnh học & Điều trị","k":"Sách","e":"pdf","s":70400170,"g":"1lZup9lyn96RTbA3hmX9-eaLpbwIfsn_K"},
-{"f":"Duoc dien Viet Nam 5 - Phan 1 (trang 1-1077).pdf","t":"Duoc dien Viet Nam 5 - Phan 1 (trang 1-1077)","c":"Dược liệu, Phương tễ & Bài thuốc","k":"Sách","e":"pdf","s":51729849,"g":"1GHL3XsIHCZXM30Y9BVk2IchmML9ZshqI"},
-{"f":"Duoc dien Viet Nam 5 - Phan 2 (trang 1078-2120).pdf","t":"Duoc dien Viet Nam 5 - Phan 2 (trang 1078-2120)","c":"Dược liệu, Phương tễ & Bài thuốc","k":"Sách","e":"pdf","s":54073730,"g":"1CshLzRHzdnDdQj2gBLvOPUpPl2iHsYIE"},
 {"f":"HOÀNG ĐẾ NỘI KINH- LINH KHU Quyển 2 .pdf","t":"HOÀNG ĐẾ NỘI KINH- LINH KHU Quyển 2","c":"Lý luận cơ bản & Chẩn đoán","k":"Sách","e":"pdf","s":73659865,"g":"1h3f5xFXRDub1tulxiEy3ayPkc3TDikqY"},
 {"f":"Dược Tính chỉ nam  Quyen 3 .pdf","t":"Dược Tính chỉ nam Quyen 3","c":"Dược liệu, Phương tễ & Bài thuốc","k":"Sách","e":"pdf","s":85566715,"g":"1Y7WwuZAirROY1TSqVKEj99xf6o2KITwh"},
 {"f":"sobotta-atlas-of-human-anatomy-vol-1 .pdf","t":"sobotta-atlas-of-human-anatomy-vol-1","c":"Y học hiện đại & Cấp cứu","k":"Sách","e":"pdf","s":73793513,"g":"1siV9zSyp6UgEhkF-1azgIgbGmk82Hg4w"},

@@ -108,6 +108,7 @@ mark{background:var(--hl);color:inherit}
 #vpages.drawing .textLayer{pointer-events:none}
 #vpages.drawing .hlR{pointer-events:none}
 #vpages.drawing .ph{cursor:crosshair;touch-action:none}
+#vtset{position:fixed;top:calc(60px + env(safe-area-inset-top,0px));right:8px;z-index:23;width:min(340px,94vw);background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:0 6px 24px #0003;padding:12px}#vtset.hide{display:none}
 #vnotes{position:fixed;top:0;right:0;bottom:0;width:min(380px,92vw);z-index:22;background:var(--card);border-left:1px solid var(--line);box-shadow:-4px 0 16px #0002;display:flex;flex-direction:column;padding:calc(10px + env(safe-area-inset-top,0px)) 12px 12px}
 #vnotes.hide{display:none}
 #vnl{flex:1;overflow:auto;margin-top:8px}
@@ -241,7 +242,10 @@ input[type=password],input[type=email],input[type=tel]{background:var(--card);bo
 <footer class="mut" style="font-size:12.5px;padding:24px 0 8px;border-top:1px solid var(--line);margin-top:24px">Tài liệu chia sẻ cho cộng đồng học tập Y học cổ truyền. Sách in thương mại chỉ mở được bằng tài khoản được cấp quyền. Nội dung tra cứu chỉ để học, không thay thế chẩn đoán và điều trị của thầy thuốc. <a href="privacy.html" style="color:var(--acc)">Chính sách quyền riêng tư</a></footer>
 </main>
 
-<div id="viewer" hidden><div class="vbar"><button class="btn" id="vclose" aria-label="Đóng">✕</button><div class="vt" id="vtitle"></div><button class="btn" id="vhl" title="Bôi vàng bằng cách kéo khung">🖍</button><button class="btn" id="vnb" title="Ghi chú của tôi">📝 0</button><button class="btn" id="vtts" title="Đọc to / dừng đọc">🔊<span class="vtl"> Đọc to</span></button><span class="mut" id="vpage" style="font-size:13px;white-space:nowrap"></span><button class="btn" id="vzo" aria-label="Thu nhỏ">−</button><button class="btn" id="vzi" aria-label="Phóng to">+</button></div><div id="vpages"></div><button class="btn p hide" id="vhlb">🖍 Bôi vàng đoạn đã chọn</button><div id="vhint" class="hide">Kéo khung lên đoạn muốn bôi vàng. Bấm 🖍 lần nữa để tắt.</div><div id="vnotes" class="hide"><div class="row" style="align-items:center;gap:6px"><b style="flex:1">📝 Ghi chú của tôi</b><button class="btn" id="vnadd">+ Ghi chú trang này</button><button class="btn" id="vnx" aria-label="Đóng">✕</button></div><p class="mut" style="font-size:12px;margin:6px 0 0">Ghi chú lưu trên máy này, không gửi đi đâu.</p><div id="vnl"></div></div></div>
+<div id="viewer" hidden><div class="vbar"><button class="btn" id="vclose" aria-label="Đóng">✕</button><div class="vt" id="vtitle"></div><button class="btn" id="vhl" title="Bôi vàng bằng cách kéo khung">🖍</button><button class="btn" id="vnb" title="Ghi chú của tôi">📝 0</button><button class="btn" id="vtts" title="Đọc to / dừng đọc">🔊<span class="vtl"> Đọc to</span></button><button class="btn" id="vtsb" title="Chọn giọng đọc, tốc độ">🗣</button><span class="mut" id="vpage" style="font-size:13px;white-space:nowrap"></span><button class="btn" id="vzo" aria-label="Thu nhỏ">−</button><button class="btn" id="vzi" aria-label="Phóng to">+</button></div><div id="vpages"></div><button class="btn p hide" id="vhlb">🖍 Bôi vàng đoạn đã chọn</button><div id="vhint" class="hide">Kéo khung lên đoạn muốn bôi vàng. Bấm 🖍 lần nữa để tắt.</div><div id="vtset" class="hide"><div class="row" style="align-items:center;gap:6px"><b style="flex:1">🗣 Giọng đọc</b><button class="btn" id="vtsx" aria-label="Đóng">✕</button></div>
+<label style="display:block;margin:10px 0 4px;font-size:14px">Chọn giọng</label><select id="vtsv" style="width:100%"></select>
+<label style="display:block;margin:12px 0 4px;font-size:14px">Tốc độ: <b id="vtsrl"></b></label><input type="range" id="vtsr" min="0.5" max="1.3" step="0.05" style="width:100%"><div class="row mut" style="justify-content:space-between;font-size:12px"><span>Chậm</span><span>Nhanh</span></div>
+<button class="btn p" id="vtst" style="margin-top:12px;width:100%">▶ Nghe thử</button><p class="mut" id="vtsh" style="font-size:12px;margin:10px 0 0"></p></div><div id="vnotes" class="hide"><div class="row" style="align-items:center;gap:6px"><b style="flex:1">📝 Ghi chú của tôi</b><button class="btn" id="vnadd">+ Ghi chú trang này</button><button class="btn" id="vnx" aria-label="Đóng">✕</button></div><p class="mut" style="font-size:12px;margin:6px 0 0">Ghi chú lưu trên máy này, không gửi đi đâu.</p><div id="vnl"></div></div></div>
 <script src="pdfjs/pdf.min.js"></script>
 <script src="noidung.js"></script>
 <script>try{const e=JSON.parse(localStorage.getItem("yhct:edit")||"null");if(e)for(const k of ["CATALOG","HUYET","THUOC","BAITHUOC","BENH","ADMIN_PIN_HASH","ZALO_LINK"])if(e[k]!==undefined&&e[k]!==null)window[k]=e[k]}catch(_){}</script>
@@ -264,9 +268,14 @@ const mb=s=>s>1e6?(s/1e6).toFixed(1)+" MB":Math.max(1,Math.round(s/1e3))+" KB";
 const extG=e=>e.startsWith("pp")||e=="ptx"?"ppt":e.startsWith("doc")?"doc":e;
 // ---------- đọc to ----------
 let viVoice=null;
-function loadVoices(){const v=speechSynthesis.getVoices();viVoice=v.find(x=>/^vi/i.test(x.lang))||null}
+// Giọng đọc: tự chọn giọng tiếng Việt rõ nhất trong máy; người dùng có thể đổi giọng (nam/nữ) và tốc độ
+let viVoices=[];const VS={get(){return store.get("tts",{voice:"",rate:.8})},set(o){store.set("tts",Object.assign(VS.get(),o))}};
+function voiceSex(v){const n=v.name.toLowerCase().replace(/viet ?nam(ese)?/g,"");if(/hoaimy|linh|female|nữ|tiếng việt|x-gft|x-vie/.test(n))return "nữ";if(/namminh|\ban\b|\bmale|\bnam\b|x-vic|x-vid|x-vif/.test(n))return "nam";return ""}
+function voiceScore(v){const n=v.name.toLowerCase();let s=0;if(/natural|online|neural|enhanced|premium/.test(n))s+=10;if(/google/.test(n))s+=6;if(/microsoft/.test(n))s+=3;if(!v.localService)s+=2;return s}
+function voiceLabel(v){const n=v.name.replace(/^Microsoft\s+/i,"").replace(/\s*-\s*Vietnamese.*$/i,"").replace(/\s*\(.*?\)\s*/g," ").trim();const x=voiceSex(v);return (x?(x=="nam"?"👨 Nam":"👩 Nữ")+" · ":"")+n+(voiceScore(v)>=10?" ⭐ rõ":"")}
+function loadVoices(){viVoices=speechSynthesis.getVoices().filter(x=>/^vi/i.test(x.lang)).sort((a,b)=>voiceScore(b)-voiceScore(a));const want=VS.get().voice;viVoice=viVoices.find(x=>x.name==want)||viVoices[0]||null;typeof ttsFill=="function"&&ttsFill()}
 if("speechSynthesis" in window){loadVoices();speechSynthesis.onvoiceschanged=loadVoices}
-function say(t){if(!("speechSynthesis" in window))return alertBox("Trình duyệt này không hỗ trợ đọc to.");speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang="vi-VN";if(viVoice)u.voice=viVoice;u.rate=.95;speechSynthesis.speak(u);if(!viVoice)alertBox("Máy chưa có giọng đọc tiếng Việt. Vào Windows Settings > Time & Language > Speech để thêm giọng Tiếng Việt, sau đó mở lại app.")}
+function say(t){if(!("speechSynthesis" in window))return alertBox("Trình duyệt này không hỗ trợ đọc to.");speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang="vi-VN";if(viVoice)u.voice=viVoice;u.rate=VS.get().rate;speechSynthesis.speak(u);if(!viVoice)alertBox("Máy chưa có giọng đọc tiếng Việt. Vào Windows Settings > Time & Language > Speech để thêm giọng Tiếng Việt, sau đó mở lại app.")}
 function alertBox(m){let d=$("#toast");if(!d){d=document.createElement("div");d.id="toast";d.className="warn";d.style.cssText="position:fixed;bottom:16px;left:16px;right:16px;max-width:560px;margin:auto;z-index:9;box-shadow:0 4px 20px #0003";document.body.append(d)}d.textContent=m;d.style.display="block";clearTimeout(d._t);d._t=setTimeout(()=>d.style.display="none",6000)}
 // ---------- điều hướng ----------
 $("#nav").onclick=e=>{const b=e.target.closest("button");if(!b)return;go(b.dataset.t)};
@@ -484,7 +493,7 @@ function ttsBtn(){const b=$("#vtts");if(!b)return;b.innerHTML=TTS.on?'⏸<span c
 function ttsStop(){TTS.on=false;TTS.gen++;if(ttsOk)speechSynthesis.cancel();ttsBtn()}
 function ttsUnlock(){if(!ttsOk)return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(" ");u.volume=0;u.lang="vi-VN";speechSynthesis.speak(u)}catch(e){}}
 function ttsChunks(t){const out=[];let s="";for(const p of t.split(/(?<=[.!?;:…])\s+|\n+/)){const w=p.trim();if(!w)continue;if((s+" "+w).length>180&&s){out.push(s);s=""}if(w.length>180){for(const q of w.match(/.{1,180}(\s|$)|.{1,180}/g))out.push(q.trim())}else s=s?s+" "+w:w}if(s)out.push(s);return out}
-function ttsSpeak(t,g){return new Promise(res=>{if(g!==TTS.gen)return res();const u=new SpeechSynthesisUtterance(t);u.lang="vi-VN";if(viVoice)u.voice=viVoice;u.rate=.95;let done=false;const fin=()=>{if(!done){done=true;clearTimeout(k);res()}};const k=setTimeout(fin,t.length*180+8000);u.onend=fin;u.onerror=fin;speechSynthesis.speak(u)})}
+function ttsSpeak(t,g){return new Promise(res=>{if(g!==TTS.gen)return res();const u=new SpeechSynthesisUtterance(t);u.lang="vi-VN";if(viVoice)u.voice=viVoice;u.rate=VS.get().rate;let done=false;const fin=()=>{if(!done){done=true;clearTimeout(k);res()}};const k=setTimeout(fin,t.length*180/Math.min(1,VS.get().rate)+8000);u.onend=fin;u.onerror=fin;speechSynthesis.speak(u)})}
 async function ttsPageText(n){const pg=await V.doc.getPage(n),tc=await pg.getTextContent();return tc.items.map(i=>i.str+(i.hasEOL?"\n":" ")).join("").replace(/[ \t]+/g," ").replace(/-\n(?=\p{Ll})/gu,"").trim()}
 async function ttsStart(from){if(!ttsOk)return alertBox("Trình duyệt này không hỗ trợ đọc to.");if(!V.doc)return;
  const g=++TTS.gen;TTS.on=true;ttsBtn();speechSynthesis.cancel();
@@ -496,10 +505,19 @@ async function ttsStart(from){if(!ttsOk)return alertBox("Trình duyệt này kh�
   if(t.replace(/\W/g,"").length<15){empty++;if(empty>=3&&n-from+1===empty){alertBox("Tài liệu này là bản chụp ảnh (không có chữ bên trong) nên chưa đọc to được. Chị vẫn xem bình thường.");return ttsStop()}continue}
   empty=0;for(const c of ttsChunks(t)){if(g!==TTS.gen)return;await ttsSpeak(c,g)}}
  if(g===TTS.gen){ttsStop();alertBox("Đã đọc hết tài liệu.")}}
+function ttsRateLbl(r){return r<=.65?"rất chậm":r<=.85?"chậm, rõ":r<=1.05?"bình thường":"nhanh"}
+function ttsFill(){const sel=$("#vtsv");if(!sel)return;const cur=viVoice&&viVoice.name;sel.innerHTML=viVoices.length?viVoices.map(v=>`<option value="${esc(v.name)}"${v.name==cur?" selected":""}>${esc(voiceLabel(v))}</option>`).join(""):'<option value="">(Máy chưa có giọng tiếng Việt)</option>';
+ const r=VS.get().rate;$("#vtsr").value=r;$("#vtsrl").textContent=ttsRateLbl(r);
+ $("#vtsh").textContent=viVoices.some(v=>voiceScore(v)>=10)?"Giọng có dấu ⭐ là giọng rõ, tự nhiên nhất.":"Muốn giọng rõ hơn: trên máy tính mở bằng Microsoft Edge (có giọng HoaiMy nữ, NamMinh nam). Trên Android: Cài đặt > Ngôn ngữ > Chuyển văn bản thành giọng nói > chọn Google, tải giọng Tiếng Việt."}
+$("#vtsb").onclick=()=>{ttsOk&&loadVoices();ttsFill();$("#vtset").classList.toggle("hide")};
+$("#vtsx").onclick=()=>$("#vtset").classList.add("hide");
+$("#vtsv").onchange=e=>{VS.set({voice:e.target.value});viVoice=viVoices.find(x=>x.name==e.target.value)||viVoice};
+$("#vtsr").oninput=e=>{const r=+e.target.value;VS.set({rate:r});$("#vtsrl").textContent=ttsRateLbl(r)};
+$("#vtst").onclick=()=>{const was=TTS.on;if(was)ttsStop();say("Xin chào. Đây là giọng đọc sách y học cổ truyền. Tốc độ này nghe có rõ không?")};
 document.addEventListener("click",e=>{if(e.target.closest("[data-read]")){TTS.want=true;ttsUnlock()}},true);
 $("#vtts").onclick=()=>{if(TTS.on)ttsStop();else{ttsUnlock();ttsStart(V.cur||1)}};
 const _open1=openReader;openReader=async function(f,url){ttsStop();await _open1(f,url);if(TTS.want&&V.doc){TTS.want=false;ttsStart(V.cur||1)}TTS.want=false};
-const _vclose1=$("#vclose").onclick;$("#vclose").onclick=()=>{ttsStop();_vclose1()};
+const _vclose1=$("#vclose").onclick;$("#vclose").onclick=()=>{ttsStop();$("#vtset").classList.add("hide");_vclose1()};
 addEventListener("pagehide",()=>{ttsOk&&speechSynthesis.cancel()});
 
 // ---------- ĐĂNG NHẬP ----------

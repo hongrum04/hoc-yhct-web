@@ -271,7 +271,7 @@ let viVoice=null;
 // Giọng đọc: tự chọn giọng tiếng Việt rõ nhất trong máy; người dùng có thể đổi giọng (nam/nữ) và tốc độ
 let viVoices=[];const VS={get(){return store.get("tts",{voice:"",rate:.8})},set(o){store.set("tts",Object.assign(VS.get(),o))}};
 function voiceSex(v){const n=v.name.toLowerCase().replace(/viet ?nam(ese)?/g,"");if(/hoaimy|linh|female|nữ|tiếng việt|x-gft|x-vie/.test(n))return "nữ";if(/namminh|\ban\b|\bmale|\bnam\b|x-vic|x-vid|x-vif/.test(n))return "nam";return ""}
-function voiceScore(v){const n=v.name.toLowerCase();let s=0;if(/natural|online|neural|enhanced|premium/.test(n))s+=10;if(/google/.test(n))s+=6;if(/microsoft/.test(n))s+=3;if(!v.localService)s+=2;return s}
+function voiceScore(v){const n=v.name.toLowerCase();let s=0;if(/hoaimy/.test(n))s+=30;if(/namminh/.test(n))s+=29;if(/natural|online|neural|enhanced|premium/.test(n))s+=10;if(/google/.test(n))s+=6;if(/microsoft/.test(n))s+=3;if(!v.localService)s+=2;return s}
 function voiceLabel(v){const n=v.name.replace(/^Microsoft\s+/i,"").replace(/\s*-\s*Vietnamese.*$/i,"").replace(/\s*\(.*?\)\s*/g," ").trim();const x=voiceSex(v);return (x?(x=="nam"?"👨 Nam":"👩 Nữ")+" · ":"")+n+(voiceScore(v)>=10?" ⭐ rõ":"")}
 function loadVoices(){viVoices=speechSynthesis.getVoices().filter(x=>/^vi/i.test(x.lang)).sort((a,b)=>voiceScore(b)-voiceScore(a));const want=VS.get().voice;viVoice=viVoices.find(x=>x.name==want)||viVoices[0]||null;typeof ttsFill=="function"&&ttsFill()}
 if("speechSynthesis" in window){loadVoices();speechSynthesis.onvoiceschanged=loadVoices}
@@ -498,6 +498,7 @@ async function ttsPageText(n){const pg=await V.doc.getPage(n),tc=await pg.getTex
 async function ttsStart(from){if(!ttsOk)return alertBox("Trình duyệt này không hỗ trợ đọc to.");if(!V.doc)return;
  const g=++TTS.gen;TTS.on=true;ttsBtn();speechSynthesis.cancel();
  if(!viVoice)alertBox("Máy chưa có giọng đọc tiếng Việt nên giọng nghe có thể lạ. Cài thêm giọng Tiếng Việt trong phần Cài đặt > Ngôn ngữ / Giọng nói của máy.");
+ else if(!ttsHasMS()&&!store.get("tipEdge",0)){store.set("tipEdge",1);alertBox("Mẹo: mở bằng Microsoft Edge để có giọng HoaiMy (nữ) / NamMinh (nam) rất tự nhiên. Bấm 🗣 để chọn giọng, tốc độ.")}
  let empty=0;
  for(let n=from;n<=V.doc.numPages;n++){if(g!==TTS.gen)return;TTS.n=n;
   const el=$("#vpages").children[n-1];if(el&&n!==from)el.scrollIntoView({behavior:"smooth",block:"start"});
@@ -505,10 +506,11 @@ async function ttsStart(from){if(!ttsOk)return alertBox("Trình duyệt này kh�
   if(t.replace(/\W/g,"").length<15){empty++;if(empty>=3&&n-from+1===empty){alertBox("Tài liệu này là bản chụp ảnh (không có chữ bên trong) nên chưa đọc to được. Chị vẫn xem bình thường.");return ttsStop()}continue}
   empty=0;for(const c of ttsChunks(t)){if(g!==TTS.gen)return;await ttsSpeak(c,g)}}
  if(g===TTS.gen){ttsStop();alertBox("Đã đọc hết tài liệu.")}}
+function ttsHasMS(){return viVoices.some(v=>/hoaimy|namminh/i.test(v.name))}
 function ttsRateLbl(r){return r<=.65?"rất chậm":r<=.85?"chậm, rõ":r<=1.05?"bình thường":"nhanh"}
 function ttsFill(){const sel=$("#vtsv");if(!sel)return;const cur=viVoice&&viVoice.name;sel.innerHTML=viVoices.length?viVoices.map(v=>`<option value="${esc(v.name)}"${v.name==cur?" selected":""}>${esc(voiceLabel(v))}</option>`).join(""):'<option value="">(Máy chưa có giọng tiếng Việt)</option>';
  const r=VS.get().rate;$("#vtsr").value=r;$("#vtsrl").textContent=ttsRateLbl(r);
- $("#vtsh").textContent=viVoices.some(v=>voiceScore(v)>=10)?"Giọng có dấu ⭐ là giọng rõ, tự nhiên nhất.":"Muốn giọng rõ hơn: trên máy tính mở bằng Microsoft Edge (có giọng HoaiMy nữ, NamMinh nam). Trên Android: Cài đặt > Ngôn ngữ > Chuyển văn bản thành giọng nói > chọn Google, tải giọng Tiếng Việt."}
+ $("#vtsh").textContent=ttsHasMS()?"Giọng có dấu ⭐ là giọng rõ, tự nhiên nhất.":"Mở bằng Microsoft Edge để có giọng HoaiMy (nữ) / NamMinh (nam) rất tự nhiên. "+"Muốn giọng rõ hơn: trên máy tính mở bằng Microsoft Edge (có giọng HoaiMy nữ, NamMinh nam). Trên Android: Cài đặt > Ngôn ngữ > Chuyển văn bản thành giọng nói > chọn Google, tải giọng Tiếng Việt."}
 $("#vtsb").onclick=()=>{ttsOk&&loadVoices();ttsFill();$("#vtset").classList.toggle("hide")};
 $("#vtsx").onclick=()=>$("#vtset").classList.add("hide");
 $("#vtsv").onchange=e=>{VS.set({voice:e.target.value});viVoice=viVoices.find(x=>x.name==e.target.value)||viVoice};

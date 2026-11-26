@@ -117,6 +117,7 @@ mark{background:var(--hl);color:inherit}
 #vhint{position:fixed;left:50%;transform:translateX(-50%);top:calc(64px + env(safe-area-inset-top,0px));z-index:21;background:#fff7c2;color:#5a4500;border:1px solid #e6c200;border-radius:10px;padding:6px 10px;font-size:13px;box-shadow:0 2px 8px #0002;max-width:92vw;text-align:center}
 #vhint.hide,#vhlb.hide{display:none}
 @media (max-width:520px){#viewer .vbar .btn{padding-left:8px;padding-right:8px}}
+@media (max-width:640px){#viewer .vtl{display:none}}
 </style>
 <style>
 #gate{position:fixed;inset:0;z-index:50;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto}
@@ -238,7 +239,7 @@ input[type=password],input[type=email],input[type=tel]{background:var(--card);bo
 <footer class="mut" style="font-size:12.5px;padding:24px 0 8px;border-top:1px solid var(--line);margin-top:24px">Tài liệu chia sẻ cho cộng đồng học tập Y học cổ truyền. Sách in thương mại chỉ mở được bằng tài khoản được cấp quyền. Nội dung tra cứu chỉ để học, không thay thế chẩn đoán và điều trị của thầy thuốc. <a href="privacy.html" style="color:var(--acc)">Chính sách quyền riêng tư</a></footer>
 </main>
 
-<div id="viewer" hidden><div class="vbar"><button class="btn" id="vclose" aria-label="Đóng">✕</button><div class="vt" id="vtitle"></div><button class="btn" id="vhl" title="Bôi vàng bằng cách kéo khung">🖍</button><button class="btn" id="vnb" title="Ghi chú của tôi">📝 0</button><span class="mut" id="vpage" style="font-size:13px;white-space:nowrap"></span><button class="btn" id="vzo" aria-label="Thu nhỏ">−</button><button class="btn" id="vzi" aria-label="Phóng to">+</button></div><div id="vpages"></div><button class="btn p hide" id="vhlb">🖍 Bôi vàng đoạn đã chọn</button><div id="vhint" class="hide">Kéo khung lên đoạn muốn bôi vàng. Bấm 🖍 lần nữa để tắt.</div><div id="vnotes" class="hide"><div class="row" style="align-items:center;gap:6px"><b style="flex:1">📝 Ghi chú của tôi</b><button class="btn" id="vnadd">+ Ghi chú trang này</button><button class="btn" id="vnx" aria-label="Đóng">✕</button></div><p class="mut" style="font-size:12px;margin:6px 0 0">Ghi chú lưu trên máy này, không gửi đi đâu.</p><div id="vnl"></div></div></div>
+<div id="viewer" hidden><div class="vbar"><button class="btn" id="vclose" aria-label="Đóng">✕</button><div class="vt" id="vtitle"></div><button class="btn" id="vhl" title="Bôi vàng bằng cách kéo khung">🖍</button><button class="btn" id="vnb" title="Ghi chú của tôi">📝 0</button><button class="btn" id="vtts" title="Đọc to / dừng đọc">🔊<span class="vtl"> Đọc to</span></button><span class="mut" id="vpage" style="font-size:13px;white-space:nowrap"></span><button class="btn" id="vzo" aria-label="Thu nhỏ">−</button><button class="btn" id="vzi" aria-label="Phóng to">+</button></div><div id="vpages"></div><button class="btn p hide" id="vhlb">🖍 Bôi vàng đoạn đã chọn</button><div id="vhint" class="hide">Kéo khung lên đoạn muốn bôi vàng. Bấm 🖍 lần nữa để tắt.</div><div id="vnotes" class="hide"><div class="row" style="align-items:center;gap:6px"><b style="flex:1">📝 Ghi chú của tôi</b><button class="btn" id="vnadd">+ Ghi chú trang này</button><button class="btn" id="vnx" aria-label="Đóng">✕</button></div><p class="mut" style="font-size:12px;margin:6px 0 0">Ghi chú lưu trên máy này, không gửi đi đâu.</p><div id="vnl"></div></div></div>
 <script src="pdfjs/pdf.min.js"></script>
 <script src="noidung.js"></script>
 <script>try{const e=JSON.parse(localStorage.getItem("yhct:edit")||"null");if(e)for(const k of ["CATALOG","HUYET","THUOC","BAITHUOC","BENH","ADMIN_PIN_HASH","ZALO_LINK"])if(e[k]!==undefined&&e[k]!==null)window[k]=e[k]}catch(_){}</script>
@@ -473,6 +474,31 @@ $("#vhlb").onclick=e=>{e.preventDefault();const h=hlFromSel();h&&hlPanel(h.id)};
 $("#vhlb").addEventListener("pointerdown",e=>e.preventDefault());
 const _open0=openReader;openReader=async function(f,url){HL.draw=false;$("#vhl").classList.remove("p");$("#vpages").classList.remove("drawing");$("#vhint").classList.add("hide");$("#vnotes").classList.add("hide");await _open0(f,url);hlCount()};
 const _vclose=$("#vclose").onclick;$("#vclose").onclick=()=>{$("#vnotes").classList.add("hide");$("#vhlb").classList.add("hide");_vclose()};
+
+// ---------- ĐỌC TO KHI MỞ SÁCH (giọng có sẵn trong máy) ----------
+const TTS={on:false,gen:0,want:false,n:1};
+const ttsOk="speechSynthesis" in window;
+function ttsBtn(){const b=$("#vtts");if(!b)return;b.innerHTML=TTS.on?'⏸<span class="vtl"> Dừng đọc</span>':'🔊<span class="vtl"> Đọc to</span>';b.title=TTS.on?"Dừng đọc":"Đọc to";b.classList.toggle("p",TTS.on)}
+function ttsStop(){TTS.on=false;TTS.gen++;if(ttsOk)speechSynthesis.cancel();ttsBtn()}
+function ttsUnlock(){if(!ttsOk)return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(" ");u.volume=0;u.lang="vi-VN";speechSynthesis.speak(u)}catch(e){}}
+function ttsChunks(t){const out=[];let s="";for(const p of t.split(/(?<=[.!?;:…])\s+|\n+/)){const w=p.trim();if(!w)continue;if((s+" "+w).length>180&&s){out.push(s);s=""}if(w.length>180){for(const q of w.match(/.{1,180}(\s|$)|.{1,180}/g))out.push(q.trim())}else s=s?s+" "+w:w}if(s)out.push(s);return out}
+function ttsSpeak(t,g){return new Promise(res=>{if(g!==TTS.gen)return res();const u=new SpeechSynthesisUtterance(t);u.lang="vi-VN";if(viVoice)u.voice=viVoice;u.rate=.95;let done=false;const fin=()=>{if(!done){done=true;clearTimeout(k);res()}};const k=setTimeout(fin,t.length*180+8000);u.onend=fin;u.onerror=fin;speechSynthesis.speak(u)})}
+async function ttsPageText(n){const pg=await V.doc.getPage(n),tc=await pg.getTextContent();return tc.items.map(i=>i.str+(i.hasEOL?"\n":" ")).join("").replace(/[ \t]+/g," ").replace(/-\n(?=\p{Ll})/gu,"").trim()}
+async function ttsStart(from){if(!ttsOk)return alertBox("Trình duyệt này không hỗ trợ đọc to.");if(!V.doc)return;
+ const g=++TTS.gen;TTS.on=true;ttsBtn();speechSynthesis.cancel();
+ if(!viVoice)alertBox("Máy chưa có giọng đọc tiếng Việt nên giọng nghe có thể lạ. Cài thêm giọng Tiếng Việt trong phần Cài đặt > Ngôn ngữ / Giọng nói của máy.");
+ let empty=0;
+ for(let n=from;n<=V.doc.numPages;n++){if(g!==TTS.gen)return;TTS.n=n;
+  const el=$("#vpages").children[n-1];if(el&&n!==from)el.scrollIntoView({behavior:"smooth",block:"start"});
+  let t="";try{t=await ttsPageText(n)}catch(e){}
+  if(t.replace(/\W/g,"").length<15){empty++;if(empty>=3&&n-from+1===empty){alertBox("Tài liệu này là bản chụp ảnh (không có chữ bên trong) nên chưa đọc to được. Chị vẫn xem bình thường.");return ttsStop()}continue}
+  empty=0;for(const c of ttsChunks(t)){if(g!==TTS.gen)return;await ttsSpeak(c,g)}}
+ if(g===TTS.gen){ttsStop();alertBox("Đã đọc hết tài liệu.")}}
+document.addEventListener("click",e=>{if(e.target.closest("[data-read]")){TTS.want=true;ttsUnlock()}},true);
+$("#vtts").onclick=()=>{if(TTS.on)ttsStop();else{ttsUnlock();ttsStart(V.cur||1)}};
+const _open1=openReader;openReader=async function(f,url){ttsStop();await _open1(f,url);if(TTS.want&&V.doc){TTS.want=false;ttsStart(V.cur||1)}TTS.want=false};
+const _vclose1=$("#vclose").onclick;$("#vclose").onclick=()=>{ttsStop();_vclose1()};
+addEventListener("pagehide",()=>{ttsOk&&speechSynthesis.cancel()});
 
 // ---------- ĐĂNG NHẬP ----------
 const ME=store.get("me",null);

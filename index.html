@@ -1,6 +1,6 @@
 <!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"></head><body>
 <title>Thư viện đọc sách YHCT</title>
-<meta name="description" content="Thư viện bài giảng Y học cổ truyền: đọc bài giảng, bệnh học, tra cứu huyệt vị, vị thuốc, bài thuốc, ngũ hành, flashcard và trắc nghiệm.">
+<meta name="description" content="Thư viện bài giảng Y học cổ truyền: đọc bài giảng, bệnh học, tra cứu huyệt vị, vị thuốc, bài thuốc, ngũ hành, thẻ nhớ và trắc nghiệm.">
 <link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#8a3b1f">
 <link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/icon-192.png">
 <style>
@@ -83,7 +83,7 @@ mark{background:var(--hl);color:inherit}
   <button data-t="lib" class="on">📚 Thư viện</button>
   <button data-t="benh">🩺 Bệnh học</button>
   <button data-t="look">🔎 Tra cứu</button>
-  <button data-t="flash">🃏 Flashcard</button>
+  <button data-t="flash">🃏 Thẻ nhớ</button>
   <button data-t="quiz">✅ Trắc nghiệm</button>
   <button data-t="notes">📝 Ghi chú</button>
   <button data-t="prog">📈 Tiến độ</button>
@@ -396,7 +396,7 @@ $("#qstart").onclick=()=>{const k=$("#qdeck").value,C=DECKS[k].c;const sh=a=>a.m
  const qs=sh(C).slice(0,Math.min(10,C.length)).map(c=>{const wrong=sh([...new Set(C.filter(x=>x.a!=c.a).map(x=>x.a))]).slice(0,3);return{q:c.q,a:c.a,o:sh([c.a,...wrong])}});
  QZ={k,qs,i:0,ok:0};showQ()};
 function showQ(){const z=QZ;if(z.i>=z.qs.length){const r={d:Date.now(),k:z.k,s:z.ok,n:z.qs.length};S.quiz.unshift(r);S.quiz=S.quiz.slice(0,50);save("quiz");
-  $("#qbox").innerHTML=`<div class="card" style="text-align:center;max-width:560px;margin:auto"><h2>${z.ok}/${z.qs.length} câu đúng</h2><p class="mut">${z.ok==z.qs.length?"Xuất sắc!":z.ok>=7?"Tốt lắm, ôn thêm chút nữa.":"Nên ôn lại bằng Flashcard."}</p><button class="btn p" onclick="$('#qstart').click()">Làm lượt mới</button></div>`;return}
+  $("#qbox").innerHTML=`<div class="card" style="text-align:center;max-width:560px;margin:auto"><h2>${z.ok}/${z.qs.length} câu đúng</h2><p class="mut">${z.ok==z.qs.length?"Xuất sắc!":z.ok>=7?"Tốt lắm, ôn thêm chút nữa.":"Nên ôn lại bằng Thẻ nhớ."}</p><button class="btn p" onclick="$('#qstart').click()">Làm lượt mới</button></div>`;return}
  const q=z.qs[z.i];$("#qbox").innerHTML=`<div class="card" style="max-width:680px;margin:auto"><div class="meta">Câu ${z.i+1}/${z.qs.length} · ${DECKS[z.k].n}</div><h3 style="font-size:18px;margin:8px 0 10px">${esc(q.q)}?</h3>${q.o.map((o,j)=>`<button class="btn opt" data-o="${j}">${esc(o)}</button>`).join("")}</div>`;
  $$("#qbox [data-o]").forEach(b=>b.onclick=()=>{if(q.done)return;q.done=1;const pick=q.o[b.dataset.o];if(pick==q.a)z.ok++;$$("#qbox [data-o]").forEach(x=>{if(q.o[x.dataset.o]==q.a)x.classList.add("ok");else if(x==b)x.classList.add("no")});setTimeout(()=>{z.i++;showQ()},pick==q.a?700:1800)})}
 // ---------- GHI CHÚ ----------
@@ -415,7 +415,7 @@ function renderProg(){const U=CATALOG.filter(x=>!x.d);
  const rows=CATS.map(c=>{const a=U.filter(x=>x.c==c),r=a.filter(x=>S.read[x.f]).length;return `<tr><td>${esc(c)}</td><td>${r}/${a.length}</td><td style="width:40%"><div class="bar"><i style="width:${a.length?r/a.length*100:0}%"></i></div></td></tr>`}).join("");
  const dk=Object.entries(DECKS).map(([k,d])=>{const B=S.box[k]||{},kn=d.c.filter((c,i)=>(B[i]||0)>=2).length;return `<tr><td>${d.n}</td><td>${kn}/${d.c.length}</td><td><div class="bar"><i style="width:${kn/d.c.length*100}%"></i></div></td></tr>`}).join("");
  $("#pbox").innerHTML=`<div class="grid"><div class="card"><h3>Đã đọc</h3><div style="font-size:28px;font-weight:700">${U.filter(x=>S.read[x.f]).length}<span class="mut" style="font-size:15px">/${U.length}</span></div></div><div class="card"><h3>Yêu thích</h3><div style="font-size:28px;font-weight:700">${Object.keys(S.fav).length}</div></div><div class="card"><h3>Ghi chú</h3><div style="font-size:28px;font-weight:700">${S.notes.length}</div></div><div class="card"><h3>Lượt trắc nghiệm</h3><div style="font-size:28px;font-weight:700">${S.quiz.length}</div><div class="meta">${S.quiz.slice(0,3).map(q=>`${q.s}/${q.n} · ${DECKS[q.k]?.n||""}`).join("<br>")}</div></div></div>
- <h3>Đọc theo chủ đề</h3><div class="tw"><table>${rows}</table></div><h3>Thuộc bài (Flashcard)</h3><div class="tw"><table>${dk}</table></div>`}
+ <h3>Đọc theo chủ đề</h3><div class="tw"><table>${rows}</table></div><h3>Thuộc bài (Thẻ nhớ)</h3><div class="tw"><table>${dk}</table></div>`}
 $("#exp").onclick=()=>{const b=new Blob([JSON.stringify({v:1,date:new Date().toISOString(),...S},null,1)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="sao-luu-hoc-yhct-"+new Date().toISOString().slice(0,10)+".json";a.click()};
 $("#imp").onchange=async e=>{try{const d=JSON.parse(await e.target.files[0].text());["fav","read","page","recent","notes","box","quiz"].forEach(k=>{if(d[k]){S[k]=d[k];save(k)}});alertBox("Đã nhập sao lưu.");renderProg()}catch(err){alertBox("File sao lưu không hợp lệ.")}};
 $("#csv").onclick=()=>{const q=v=>'"'+String(v??"").replace(/"/g,'""')+'"';const t="﻿"+[["Tên file","Tiêu đề","Chủ đề","Loại","Định dạng","Dung lượng (MB)","Có thể trùng với","Đã đọc","Yêu thích"].map(q).join(","),...CATALOG.map(x=>[x.f,x.t,x.c,x.k,x.e,(x.s/1e6).toFixed(1),x.d||"",S.read[x.f]?"x":"",S.fav[x.f]?"x":""].map(q).join(","))].join("\r\n");const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([t],{type:"text/csv"}));a.download="danh-muc-tai-lieu-yhct.csv";a.click()};

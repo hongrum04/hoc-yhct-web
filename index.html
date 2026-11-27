@@ -270,8 +270,9 @@ const extG=e=>e.startsWith("pp")||e=="ptx"?"ppt":e.startsWith("doc")?"doc":e;
 let viVoice=null;
 // Giọng đọc: tự chọn giọng tiếng Việt rõ nhất trong máy; người dùng có thể đổi giọng (nam/nữ) và tốc độ
 let viVoices=[];const VS={get(){return store.get("tts",{voice:"",rate:.8})},set(o){store.set("tts",Object.assign(VS.get(),o))}};
-function voiceSex(v){const n=v.name.toLowerCase().replace(/viet ?nam(ese)?/g,"");if(/hoaimy|linh|female|nữ|tiếng việt|x-gft|x-vie/.test(n))return "nữ";if(/namminh|\ban\b|\bmale|\bnam\b|x-vic|x-vid|x-vif/.test(n))return "nam";return ""}
-function voiceScore(v){const n=v.name.toLowerCase();let s=0;if(/hoaimy/.test(n))s+=30;if(/namminh/.test(n))s+=29;if(/natural|online|neural|enhanced|premium/.test(n))s+=10;if(/google/.test(n))s+=6;if(/microsoft/.test(n))s+=3;if(!v.localService)s+=2;return s}
+const vkd=t=>t.normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/đ/gi,"d").toLowerCase();
+function voiceSex(v){const n=v.name.toLowerCase().replace(/viet ?nam(ese)?/g,"");if(/hoai ?my/.test(vkd(n))||/linh|female|nữ|tiếng việt|x-gft|x-vie/.test(n))return "nữ";if(/nam ?minh/.test(vkd(n))||/\ban\b|\bmale|\bnam\b|x-vic|x-vid|x-vif/.test(n))return "nam";return ""}
+function voiceScore(v){const n=vkd(v.name);let s=0;if(/hoai ?my/.test(n))s+=30;if(/nam ?minh/.test(n))s+=29;if(/natural|online|neural|enhanced|premium/.test(n))s+=10;if(/google/.test(n))s+=6;if(/microsoft/.test(n))s+=3;if(!v.localService)s+=2;return s}
 function voiceLabel(v){const n=v.name.replace(/^Microsoft\s+/i,"").replace(/\s*-\s*Vietnamese.*$/i,"").replace(/\s*\(.*?\)\s*/g," ").trim();const x=voiceSex(v);return (x?(x=="nam"?"👨 Nam":"👩 Nữ")+" · ":"")+n+(voiceScore(v)>=10?" ⭐ rõ":"")}
 function loadVoices(){viVoices=speechSynthesis.getVoices().filter(x=>/^vi/i.test(x.lang)).sort((a,b)=>voiceScore(b)-voiceScore(a));const want=VS.get().voice;viVoice=viVoices.find(x=>x.name==want)||viVoices[0]||null;typeof ttsFill=="function"&&ttsFill()}
 if("speechSynthesis" in window){loadVoices();speechSynthesis.onvoiceschanged=loadVoices}
@@ -506,7 +507,7 @@ async function ttsStart(from){if(!ttsOk)return alertBox("Trình duyệt này kh�
   if(t.replace(/\W/g,"").length<15){empty++;if(empty>=3&&n-from+1===empty){alertBox("Tài liệu này là bản chụp ảnh (không có chữ bên trong) nên chưa đọc to được. Chị vẫn xem bình thường.");return ttsStop()}continue}
   empty=0;for(const c of ttsChunks(t)){if(g!==TTS.gen)return;await ttsSpeak(c,g)}}
  if(g===TTS.gen){ttsStop();alertBox("Đã đọc hết tài liệu.")}}
-function ttsHasMS(){return viVoices.some(v=>/hoaimy|namminh/i.test(v.name))}
+function ttsHasMS(){return viVoices.some(v=>/hoai ?my|nam ?minh/.test(vkd(v.name)))}
 function ttsRateLbl(r){return r<=.65?"rất chậm":r<=.85?"chậm, rõ":r<=1.05?"bình thường":"nhanh"}
 function ttsFill(){const sel=$("#vtsv");if(!sel)return;const cur=viVoice&&viVoice.name;sel.innerHTML=viVoices.length?viVoices.map(v=>`<option value="${esc(v.name)}"${v.name==cur?" selected":""}>${esc(voiceLabel(v))}</option>`).join(""):'<option value="">(Máy chưa có giọng tiếng Việt)</option>';
  const r=VS.get().rate;$("#vtsr").value=r;$("#vtsrl").textContent=ttsRateLbl(r);

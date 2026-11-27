@@ -510,7 +510,7 @@ function ttsHasMS(){return viVoices.some(v=>/hoaimy|namminh/i.test(v.name))}
 function ttsRateLbl(r){return r<=.65?"rất chậm":r<=.85?"chậm, rõ":r<=1.05?"bình thường":"nhanh"}
 function ttsFill(){const sel=$("#vtsv");if(!sel)return;const cur=viVoice&&viVoice.name;sel.innerHTML=viVoices.length?viVoices.map(v=>`<option value="${esc(v.name)}"${v.name==cur?" selected":""}>${esc(voiceLabel(v))}</option>`).join(""):'<option value="">(Máy chưa có giọng tiếng Việt)</option>';
  const r=VS.get().rate;$("#vtsr").value=r;$("#vtsrl").textContent=ttsRateLbl(r);
- $("#vtsh").textContent=ttsHasMS()?"Giọng có dấu ⭐ là giọng rõ, tự nhiên nhất.":"Mở bằng Microsoft Edge để có giọng HoaiMy (nữ) / NamMinh (nam) rất tự nhiên. "+"Muốn giọng rõ hơn: trên máy tính mở bằng Microsoft Edge (có giọng HoaiMy nữ, NamMinh nam). Trên Android: Cài đặt > Ngôn ngữ > Chuyển văn bản thành giọng nói > chọn Google, tải giọng Tiếng Việt."}
+ $("#vtsh").textContent=ttsHasMS()?"Giọng có dấu ⭐ là giọng rõ, tự nhiên nhất.":"Muốn giọng nữ HoaiMy / nam NamMinh tự nhiên hơn: trên máy tính mở bằng Microsoft Edge. Trên Android: Cài đặt > Ngôn ngữ > Chuyển văn bản thành giọng nói > chọn Google, tải giọng Tiếng Việt."}
 $("#vtsb").onclick=()=>{ttsOk&&loadVoices();ttsFill();$("#vtset").classList.toggle("hide")};
 $("#vtsx").onclick=()=>$("#vtset").classList.add("hide");
 $("#vtsv").onchange=e=>{VS.set({voice:e.target.value});viVoice=viVoices.find(x=>x.name==e.target.value)||viVoice};

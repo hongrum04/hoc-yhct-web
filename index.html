@@ -386,7 +386,7 @@ function pickCard(){const k=$("#deck").value,B=S.box[k]||{},C=DECKS[k].c;
  // Leitner: ưu tiên hộp thấp
  const w=C.map((c,i)=>({i,b:B[i]||0}));const min=Math.min(...w.map(x=>x.b));const pool=w.filter(x=>x.b<=min+1&&x.i!==fc?.i);const p=(pool.length?pool:w)[Math.floor(Math.random()*(pool.length||w.length))];
  fc={i:p.i,...C[p.i]};flip=false;showCard();const known=C.filter((c,i)=>(B[i]||0)>=2).length;$("#fstat").textContent=`Đã thuộc ${known}/${C.length}`}
-function huyetAnh(r){const A=window.HUYET_ANH||{},K=window.KINH_ANH||{},f=A[r[0].toLowerCase()]||K[r[2]];return f?`<img class="hanh" src="${f}" alt="Hình huyệt ${esc(r[0])}" loading="lazy" onclick="event.stopPropagation();window.open(this.src)">${A[r[0].toLowerCase()]?"":`<div class="mut" style="font-size:12px">Hình đường kinh ${esc(r[2])}, tìm số thứ tự huyệt trên hình. Bấm hình để phóng to.</div>`}`:""}
+function huyetAnh(r){const A=window.HUYET_ANH||{},K=window.KINH_ANH||{},a=A[r[0].toLowerCase()],k=K[r[2]],img=(f,t)=>`<img class="hanh" src="${f}" alt="${t}" loading="lazy" onclick="event.stopPropagation();window.open(this.src)">`;return (a?img(a,"Hình huyệt "+esc(r[0])):"")+(k?img(k,"Đường kinh "+esc(r[2]))+`<div class="mut" style="font-size:12px">Đường kinh ${esc(r[2])}: tìm huyệt ${esc(r[0])} theo số trên hình. Bấm hình để phóng to.</div>`:"")}
 function showCard(){$("#fcard").innerHTML=flip?`<div class="mut" style="font-size:14px">${esc(fc.q)}</div><div style="margin-top:10px">${esc(fc.a)}</div>${fc.h?huyetAnh(fc.h):""}`:`<div class="q">${esc(fc.q)}</div><div class="mut" style="font-size:13px;margin-top:10px">Bấm để xem đáp án</div>`}
 function initFlash(){if(!fc)pickCard()}
 $("#deck").onchange=()=>{fc=null;pickCard()};

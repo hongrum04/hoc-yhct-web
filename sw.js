@@ -1,4 +1,4 @@
-const V="hoc-yhct-v11",SHELL=["./","index.html","noidung.js","dongbo.js","manifest.webmanifest","pdfjs/pdf.min.js","pdfjs/pdf.worker.min.js","icons/icon-192.png"];
+const V="hoc-yhct-v12",SHELL=["./","index.html","noidung.js","huyetanh.js","dongbo.js","manifest.webmanifest","pdfjs/pdf.min.js","pdfjs/pdf.worker.min.js","icons/icon-192.png"];
 self.addEventListener("install",e=>{e.waitUntil(caches.open(V).then(c=>c.addAll(SHELL)));self.skipWaiting()});
 self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==V).map(k=>caches.delete(k)))));self.clients.claim()});
 self.addEventListener("fetch",e=>{const r=e.request;if(r.method!=="GET"||new URL(r.url).origin!==location.origin)return;

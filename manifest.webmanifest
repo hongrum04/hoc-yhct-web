@@ -1,7 +1,7 @@
 {
  "name": "Thư viện đọc sách YHCT",
  "short_name": "Thư viện YHCT",
- "description": "Đọc bài giảng, tra cứu huyệt, vị thuốc, bài thuốc, thẻ nhớ và trắc nghiệm Y học cổ truyền.",
+ "description": "Đọc bài giảng, tra cứu huyệt, vị thuốc, bài thuốc, thẻ học và trắc nghiệm Y học cổ truyền.",
  "lang": "vi",
  "start_url": "./",
  "scope": "./",
